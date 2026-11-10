@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory | RetailPulse AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>◈ RetailPulse <span>AI</span></h2>
+
+    <p class="menu-title">MAIN MENU</p>
+
+    <nav class="sidebar-nav">
+        <a href="/">▦ Dashboard</a>
+        <a href="{{ url_for('products') }}">▣ Products</a>
+        <a class="active" href="{{ url_for('inventory') }}">▤ Inventory</a>
+        <a href="{{ url_for('sales') }}">▥ Sales</a>
+        <a href="#">⌁ Demand Forecast</a>
+        <a href="#">↗ Smart Reorder</a>
+        <a href="#">▧ Reports</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        INTELLIGENCE. PRIVACY. GROWTH.
+    </div>
+
+</div>
+
+
+<main class="main-content">
+
+    <header>
+        <div>
+            <h1>Inventory Management</h1>
+            <p>Monitor stock levels and identify products needing attention.</p>
+        </div>
+
+        <div class="status">● System Online</div>
+    </header>
+
+
+    <!-- INVENTORY STATISTICS -->
+
+    <section class="stats">
+
+        <div class="card">
+            <p>Total Products</p>
+            <h2>{{ total_products }}</h2>
+            <small>Registered products</small>
+        </div>
+
+        <div class="card">
+            <p>Low Stock</p>
+            <h2 class="warning">{{ low_stock }}</h2>
+            <small>Below reorder threshold</small>
+        </div>
+
+        <div class="card">
+            <p>Out of Stock</p>
+            <h2 class="warning">{{ out_of_stock }}</h2>
+            <small>Products with zero stock</small>
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH AND FILTER -->
+
+    <section class="card">
+
+        <h3>Inventory Controls</h3>
+
+        <form method="GET"
+              action="{{ url_for('inventory') }}"
+              class="inventory-controls">
+
+            <input
+                type="text"
+                name="q"
+                value="{{ search }}"
+                placeholder="Search product or category..."
+            >
+
+            <select name="status">
+                <option value="all"
+                    {% if status_filter == 'all' %}selected{% endif %}>
+                    All Products
+                </option>
+
+                <option value="healthy"
+                    {% if status_filter == 'healthy' %}selected{% endif %}>
+                    Healthy Stock
+                </option>
+
+                <option value="low"
+                    {% if status_filter == 'low' %}selected{% endif %}>
+                    Low Stock
+                </option>
+
+                <option value="out"
+                    {% if status_filter == 'out' %}selected{% endif %}>
+                    Out of Stock
+                </option>
+            </select>
+
+            <button type="submit">Apply</button>
+
+            <a href="{{ url_for('inventory') }}">Reset</a>
+
+        </form>
+
+    </section>
+
+
+    <!-- INVENTORY TABLE -->
+
+    <section class="card recent-section">
+
+        <h3>Inventory Details</h3>
+
+        <p>Current stock position for every registered product.</p>
+
+        {% if products %}
+
+        <div class="table-wrapper">
+
+            <table class="product-table">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Available Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Stock Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for product in products %}
+
+                    <tr>
+
+                        <td>{{ product['name'] }}</td>
+
+                        <td>{{ product['category'] }}</td>
+
+                        <td>₹{{ "%.2f"|format(product['price']) }}</td>
+
+                        <td>{{ product['stock_quantity'] }}</td>
+
+                        <td>{{ product['reorder_level'] }}</td>
+
+                        <td>
+                            {% if product['stock_quantity'] == 0 %}
+                                <span class="stock-badge out">Out of Stock</span>
+                            {% elif product['stock_quantity'] <= product['reorder_level'] %}
+                                <span class="stock-badge low">Low Stock</span>
+                            {% else %}
+                                <span class="stock-badge healthy">Healthy</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-chart">
+            No matching inventory products found.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <footer>
+        RetailPulse AI · Predict Demand. Prevent Stockouts. Reduce Waste.
+    </footer>
+
+</main>
+
+</body>
+</html>

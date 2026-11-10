@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | RetailPulse AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .form-section-title {
+            color: #FDBA74;
+            font-size: 13px;
+            font-weight: 700;
+            margin: 22px 0 12px;
+            letter-spacing: 1px;
+        }
+
+        .field-help {
+            color: #A3A3A3;
+            font-size: 11px;
+            margin: 4px 0 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 18px;
+        }
+
+        @media (max-width: 650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>◈ RetailPulse <span>AI</span></h2>
+    <p class="menu-title">MAIN MENU</p>
+
+    <a href="{{ url_for('dashboard') }}">▦ Dashboard</a>
+    <a class="active" href="{{ url_for('products') }}">▣ Products</a>
+    <a href="{{ url_for('inventory') }}">▤ Inventory</a>
+    <a href="{{ url_for('sales') }}">▥ Sales</a>
+    <a href="{{ url_for('dashboard') }}#demand-forecast">⌁ Demand Forecast</a>
+    <a href="{{ url_for('dashboard') }}#smart-reorder">↗ Smart Reorder</a>
+    <a href="{{ url_for('dashboard') }}">▧ Reports</a>
+
+    <div class="sidebar-bottom">
+        INTELLIGENCE. PRIVACY. GROWTH.
+    </div>
+</div>
+
+<main class="main-content">
+
+    <header>
+        <div>
+            <h1>Product Management</h1>
+            <p>Add and manage your store products.</p>
+        </div>
+
+        <div class="status">● Database Connected</div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="notice {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="card product-form">
+
+        <h3>Add New Product</h3>
+
+        <form method="POST" action="{{ url_for('products') }}">
+
+            <div class="form-section-title">
+                BASIC PRODUCT INFORMATION
+            </div>
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Product Name</label>
+                    <input type="text" name="name"
+                           placeholder="Example: Rice" required>
+                </div>
+
+                <div>
+                    <label>Category</label>
+                    <input type="text" name="category"
+                           placeholder="Example: Grocery" required>
+                </div>
+
+                <div>
+                    <label>Price (₹)</label>
+                    <input type="number" name="price"
+                           min="0.01" step="0.01" required>
+                </div>
+
+                <div>
+                    <label>Current Stock</label>
+                    <input type="number" name="stock_quantity"
+                           min="0" step="1" required>
+                </div>
+
+                <div>
+                    <label>Reorder Level</label>
+                    <input type="number" name="reorder_level"
+                           min="0" step="1" required>
+                    <p class="field-help">
+                        Your manually defined minimum stock level.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="form-section-title">
+                SMART REORDER SETTINGS
+            </div>
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Supplier Lead Time (Days)</label>
+                    <input type="number"
+                           name="lead_time_days"
+                           min="1"
+                           max="365"
+                           value="3"
+                           step="1"
+                           required>
+
+                    <p class="field-help">
+                        Expected number of days for supplier delivery.
+                    </p>
+                </div>
+
+                <div>
+                    <label>Safety Stock (Units)</label>
+                    <input type="number"
+                           name="safety_stock"
+                           min="0"
+                           value="5"
+                           step="1"
+                           required>
+
+                    <p class="field-help">
+                        Extra units kept as a demand buffer.
+                    </p>
+                </div>
+
+            </div>
+
+            <button type="submit">
+                + Add Product
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="card product-table">
+
+        <h3>Product Inventory</h3>
+
+        {% if products %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Lead Time</th>
+                        <th>Safety Stock</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for product in products %}
+
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category }}</td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(product.price) }}
+                        </td>
+
+                        <td>{{ product.stock_quantity }}</td>
+                        <td>{{ product.reorder_level }}</td>
+
+                        <td>
+                            {{ product['lead_time_days'] }} days
+                        </td>
+
+                        <td>
+                            {{ product['safety_stock'] }} units
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-chart">
+            No products added yet. Add your first product above.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+</body>
+</html>

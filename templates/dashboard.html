@@ -1,0 +1,2470 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RetailPulse AI | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        /* ==========================================
+           RETAILPULSE AI DASHBOARD
+           GRAPHITE + ORANGE DESIGN SYSTEM
+        ========================================== */
+
+        :root {
+            --rp-bg: #121212;
+            --rp-sidebar: #191919;
+            --rp-card: #202020;
+            --rp-card-light: #262626;
+            --rp-border: #343434;
+            --rp-orange: #F97316;
+            --rp-peach: #FDBA74;
+            --rp-white: #FAFAFA;
+            --rp-muted: #A3A3A3;
+            --rp-green: #22C55E;
+            --rp-red: #EF4444;
+            --rp-yellow: #EAB308;
+            --rp-blue: #60A5FA;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--rp-bg);
+            color: var(--rp-white);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .rp-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .rp-sidebar {
+            width: 245px;
+            min-width: 245px;
+            background: var(--rp-sidebar);
+            border-right: 1px solid var(--rp-border);
+            padding: 25px 17px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rp-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 8px 30px;
+            border-bottom: 1px solid var(--rp-border);
+        }
+
+        .rp-brand img {
+            width: 43px;
+            height: 43px;
+            object-fit: contain;
+        }
+
+        .rp-brand h2 {
+            margin: 0;
+            font-size: 19px;
+            letter-spacing: -0.5px;
+        }
+
+        .rp-brand span {
+            color: var(--rp-orange);
+        }
+
+        .rp-brand small {
+            display: block;
+            margin-top: 4px;
+            color: var(--rp-muted);
+            font-size: 10px;
+            letter-spacing: 1.2px;
+        }
+
+        .rp-nav-title {
+            margin: 28px 10px 12px;
+            color: #777;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .rp-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .rp-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 13px;
+            border-radius: 9px;
+            color: #B8B8B8;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .rp-nav a:hover,
+        .rp-nav a.active {
+            color: var(--rp-white);
+            background: rgba(249, 115, 22, 0.13);
+        }
+
+        .rp-nav a.active {
+            border-left: 3px solid var(--rp-orange);
+        }
+
+        .rp-nav-icon {
+            width: 19px;
+            text-align: center;
+            color: var(--rp-orange);
+            font-size: 16px;
+        }
+
+        .rp-sidebar-footer {
+            margin-top: auto;
+            padding: 16px 10px 0;
+            border-top: 1px solid var(--rp-border);
+            color: var(--rp-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .rp-online-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            margin-right: 6px;
+            border-radius: 50%;
+            background: var(--rp-green);
+        }
+
+        /* MAIN CONTENT */
+
+        .rp-main {
+            flex: 1;
+            min-width: 0;
+            padding: 28px 32px;
+        }
+
+        .rp-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 27px;
+        }
+
+        .rp-topbar h1 {
+            margin: 0;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .rp-topbar p {
+            margin: 7px 0 0;
+            color: var(--rp-muted);
+            font-size: 13px;
+        }
+
+        .rp-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rp-system-status {
+            padding: 9px 13px;
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 20px;
+            color: var(--rp-green);
+            background: rgba(34, 197, 94, 0.07);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .rp-date {
+            color: var(--rp-muted);
+            font-size: 12px;
+        }
+
+        /* WELCOME PANEL */
+
+        .rp-welcome {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+            padding: 27px;
+            border: 1px solid #49301F;
+            border-radius: 15px;
+            background:
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(249, 115, 22, 0.17),
+                    transparent 35%
+                ),
+                linear-gradient(110deg, #24201D, #1B1B1B);
+        }
+
+        .rp-welcome h2 {
+            margin: 0 0 10px;
+            font-size: 22px;
+        }
+
+        .rp-welcome h2 span {
+            color: var(--rp-orange);
+        }
+
+        .rp-welcome p {
+            max-width: 620px;
+            margin: 0;
+            color: #B5B5B5;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .rp-welcome-tagline {
+            margin-top: 17px;
+            color: var(--rp-peach);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+        }
+
+        /* SECTION */
+
+        .rp-section {
+            margin-bottom: 27px;
+            scroll-margin-top: 20px;
+        }
+
+        .rp-section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .rp-section-heading h2 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .rp-section-heading p {
+            margin: 5px 0 0;
+            color: var(--rp-muted);
+            font-size: 11px;
+        }
+
+        .rp-section-link {
+            color: var(--rp-orange);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* STAT CARDS */
+
+        .rp-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 27px;
+        }
+
+        .rp-stat-card {
+            padding: 19px;
+            border: 1px solid var(--rp-border);
+            border-radius: 12px;
+            background: var(--rp-card);
+        }
+
+        .rp-stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rp-stat-label {
+            color: var(--rp-muted);
+            font-size: 11px;
+        }
+
+        .rp-stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            color: var(--rp-orange);
+            background: rgba(249, 115, 22, 0.12);
+            font-size: 17px;
+        }
+
+        .rp-stat-value {
+            margin-top: 15px;
+            font-size: 25px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .rp-stat-note {
+            margin-top: 6px;
+            color: var(--rp-muted);
+            font-size: 10px;
+        }
+
+        /* CARDS AND GRIDS */
+
+        .rp-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        .rp-panel {
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid var(--rp-border);
+            border-radius: 12px;
+            background: var(--rp-card);
+        }
+
+        .rp-panel-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .rp-panel-subtitle {
+            margin: 6px 0 18px;
+            color: var(--rp-muted);
+            font-size: 11px;
+        }
+
+        .rp-panel-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .rp-orange {
+            color: var(--rp-orange);
+        }
+
+        .rp-green {
+            color: var(--rp-green);
+        }
+
+        .rp-red {
+            color: var(--rp-red);
+        }
+
+        .rp-yellow {
+            color: var(--rp-yellow);
+        }
+
+        /* SALES PERFORMANCE */
+
+        .rp-sales-summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .rp-sales-item {
+            padding: 15px;
+            border-radius: 9px;
+            background: var(--rp-card-light);
+        }
+
+        .rp-sales-item span {
+            display: block;
+            color: var(--rp-muted);
+            font-size: 10px;
+        }
+
+        .rp-sales-item strong {
+            display: block;
+            margin-top: 9px;
+            font-size: 19px;
+        }
+
+        /* CHARTS */
+
+        .rp-chart {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .rp-chart-row {
+            display: grid;
+            grid-template-columns: 55px minmax(0, 1fr) 85px;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .rp-chart-label {
+            color: #C5C5C5;
+            font-size: 11px;
+        }
+
+        .rp-chart-track {
+            height: 10px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #353535;
+        }
+
+        .rp-chart-bar {
+            height: 100%;
+            min-width: 0;
+            border-radius: 20px;
+            background: var(--rp-orange);
+        }
+
+        .rp-chart-value {
+            color: var(--rp-white);
+            font-size: 11px;
+            text-align: right;
+        }
+
+        .rp-chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 18px;
+            color: var(--rp-muted);
+            font-size: 10px;
+        }
+
+        .rp-legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 5px;
+            border-radius: 50%;
+        }
+
+        .rp-orange-dot {
+            background: var(--rp-orange);
+        }
+
+        .rp-blue-dot {
+            background: var(--rp-blue);
+        }
+
+        .rp-green-dot {
+            background: var(--rp-green);
+        }
+
+        .rp-yellow-dot {
+            background: var(--rp-yellow);
+        }
+
+        .rp-sales-bar {
+            background: linear-gradient(
+                90deg,
+                #EA580C,
+                #FDBA74
+            );
+        }
+
+        .rp-demand-bar {
+            background: linear-gradient(
+                90deg,
+                #C2410C,
+                #F97316
+            );
+        }
+
+        /* FORECAST LINE CHART */
+
+        .rp-line-chart-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .rp-line-chart {
+            display: block;
+            width: 100%;
+            min-width: 320px;
+            height: auto;
+        }
+
+        .rp-line-chart text {
+            fill: #A3A3A3;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+        }
+
+        .rp-chart-empty {
+            padding: 30px 12px;
+            color: var(--rp-muted);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        /* STOCK COMPARISON */
+
+        .rp-stock-product {
+            margin-bottom: 23px;
+        }
+
+        .rp-stock-product:last-child {
+            margin-bottom: 0;
+        }
+
+        .rp-stock-product-name {
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .rp-stock-line {
+            display: grid;
+            grid-template-columns: 100px minmax(0, 1fr) 35px;
+            align-items: center;
+            gap: 9px;
+            margin: 9px 0;
+        }
+
+        .rp-stock-line span {
+            color: var(--rp-muted);
+            font-size: 10px;
+        }
+
+        .rp-stock-line strong {
+            font-size: 10px;
+            text-align: right;
+        }
+
+        .rp-stock-current {
+            background: var(--rp-orange);
+        }
+
+        .rp-stock-reorder {
+            background: var(--rp-blue);
+        }
+
+        .rp-stock-safety {
+            background: var(--rp-green);
+        }
+
+        /* RISK OVERVIEW */
+
+        .rp-risk-row {
+            margin: 14px 0;
+        }
+
+        .rp-risk-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 7px;
+            color: #D0D0D0;
+            font-size: 11px;
+        }
+
+        .rp-risk-track {
+            height: 9px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #383838;
+        }
+
+        .rp-risk-bar {
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .rp-risk-critical {
+            background: #EF4444;
+        }
+
+        .rp-risk-high {
+            background: #F97316;
+        }
+
+        .rp-risk-medium {
+            background: #EAB308;
+        }
+
+        .rp-risk-overstock {
+            background: #A78BFA;
+        }
+
+        .rp-risk-healthy {
+            background: #22C55E;
+        }
+
+        .rp-risk-insufficient {
+            background: #737373;
+        }
+
+        /* TABLES */
+
+        .rp-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .rp-table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        .rp-table th {
+            padding: 12px 11px;
+            color: #929292;
+            background: #292929;
+            font-size: 10px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .rp-table td {
+            padding: 13px 11px;
+            border-bottom: 1px solid #333;
+            color: #D5D5D5;
+            font-size: 11px;
+        }
+
+        .rp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rp-table tbody tr:hover {
+            background: rgba(255,255,255,0.025);
+        }
+
+        .rp-empty {
+            padding: 22px;
+            color: var(--rp-muted);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        /* STATUS BADGES */
+
+        .rp-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .rp-badge-healthy {
+            color: var(--rp-green);
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        .rp-badge-critical {
+            color: #FCA5A5;
+            background: rgba(239, 68, 68, 0.13);
+        }
+
+        .rp-badge-warning {
+            color: var(--rp-peach);
+            background: rgba(249, 115, 22, 0.13);
+        }
+
+        .rp-badge-medium {
+            color: var(--rp-yellow);
+            background: rgba(234, 179, 8, 0.12);
+        }
+
+        .rp-badge-neutral {
+            color: #C4C4C4;
+            background: #383838;
+        }
+
+        /* INSIGHTS */
+
+        .rp-insight {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 12px 0;
+            padding: 14px;
+            border: 1px solid var(--rp-border);
+            border-radius: 9px;
+            background: var(--rp-card-light);
+        }
+
+        .rp-insight-icon {
+            color: var(--rp-orange);
+            font-size: 17px;
+        }
+
+        .rp-insight strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+
+        .rp-insight p {
+            margin: 0;
+            color: var(--rp-muted);
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+
+        .rp-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 35px;
+            padding: 18px 0;
+            border-top: 1px solid var(--rp-border);
+            color: #777;
+            font-size: 10px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .rp-stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .rp-main {
+                padding: 23px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .rp-layout {
+                display: block;
+            }
+
+            .rp-sidebar {
+                width: 100%;
+                min-width: 0;
+                padding: 13px;
+            }
+
+            .rp-brand {
+                padding-bottom: 13px;
+            }
+
+            .rp-nav-title {
+                margin-top: 15px;
+            }
+
+            .rp-nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .rp-nav a {
+                padding: 10px;
+                font-size: 11px;
+            }
+
+            .rp-sidebar-footer {
+                margin-top: 15px;
+            }
+
+            .rp-main {
+                padding: 19px 14px;
+            }
+
+            .rp-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .rp-topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .rp-sales-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .rp-footer {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .rp-stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 9px;
+            }
+
+            .rp-stat-card {
+                padding: 13px;
+            }
+
+            .rp-stat-value {
+                font-size: 19px;
+            }
+
+            .rp-welcome {
+                padding: 19px;
+            }
+
+            .rp-panel {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="rp-layout">
+
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+
+    <aside class="rp-sidebar">
+
+        <div class="rp-brand">
+
+            <img
+                src="{{ url_for('static', filename='images/retailpulse-logo.svg') }}"
+                alt="RetailPulse AI Logo"
+            >
+
+            <div>
+                <h2>Retail<span>Pulse</span> AI</h2>
+                <small>INTELLIGENT RETAIL SYSTEM</small>
+            </div>
+
+        </div>
+
+        <div class="rp-nav-title">MAIN MENU</div>
+
+        <nav class="rp-nav">
+
+            <a href="{{ url_for('dashboard') }}" class="active">
+                <span class="rp-nav-icon">⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('products') }}">
+                <span class="rp-nav-icon">▦</span>
+                Products
+            </a>
+
+            <a href="{{ url_for('inventory') }}">
+                <span class="rp-nav-icon">▤</span>
+                Inventory
+            </a>
+
+            <a href="{{ url_for('sales') }}">
+                <span class="rp-nav-icon">₹</span>
+                Sales
+            </a>
+
+            <a href="#demand-forecast">
+                <span class="rp-nav-icon">⌁</span>
+                Demand Forecast
+            </a>
+
+            <a href="#smart-reorder">
+                <span class="rp-nav-icon">⟳</span>
+                Smart Reorder
+            </a>
+
+            <a href="#stock-risk">
+                <span class="rp-nav-icon">△</span>
+                Stock Risk
+            </a>
+
+            <a href="#ai-insights">
+                <span class="rp-nav-icon">✧</span>
+                AI Insights
+            </a>
+
+        </nav>
+
+        <div class="rp-sidebar-footer">
+            <div>
+                <span class="rp-online-dot"></span>
+                System Online
+            </div>
+
+            <div>RetailPulse AI</div>
+            <div>Intelligence. Privacy. Growth.</div>
+        </div>
+
+    </aside>
+
+
+    <!-- ==========================================
+         MAIN DASHBOARD
+    =========================================== -->
+
+    <main class="rp-main">
+
+        <!-- HEADER -->
+
+        <header class="rp-topbar">
+
+            <div>
+                <h1>Dashboard Overview</h1>
+
+                <p>
+                    Welcome to your intelligent retail management system.
+                </p>
+            </div>
+
+            <div class="rp-topbar-right">
+
+                <span class="rp-system-status">
+                    <span class="rp-online-dot"></span>
+                    System Online
+                </span>
+
+                <span class="rp-date">
+                    {{ now if now is defined else "Retail Analytics" }}
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- ======================================
+             WELCOME SECTION
+        ======================================= -->
+
+        <section class="rp-welcome">
+
+            <h2>
+                Welcome to <span>RetailPulse AI</span>
+            </h2>
+
+            <p>
+                Monitor inventory, understand sales performance,
+                forecast product demand and make smarter stock decisions
+                with intelligent retail analytics.
+            </p>
+
+            <div class="rp-welcome-tagline">
+                PREDICT DEMAND. PREVENT STOCKOUTS. REDUCE WASTE.
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             TOP STATISTICS
+        ======================================= -->
+
+        <section class="rp-stats-grid">
+
+            <div class="rp-stat-card">
+
+                <div class="rp-stat-top">
+                    <span class="rp-stat-label">Total Products</span>
+                    <span class="rp-stat-icon">▦</span>
+                </div>
+
+                <div class="rp-stat-value">
+                    {{ total_products }}
+                </div>
+
+                <div class="rp-stat-note">
+                    Products in inventory
+                </div>
+
+            </div>
+
+
+            <div class="rp-stat-card">
+
+                <div class="rp-stat-top">
+                    <span class="rp-stat-label">Low Stock Alerts</span>
+                    <span class="rp-stat-icon">⚠</span>
+                </div>
+
+                <div class="rp-stat-value">
+                    {{ low_stock_count + out_of_stock_count }}
+                </div>
+
+                <div class="rp-stat-note">
+                    Products needing attention
+                </div>
+
+            </div>
+
+
+            <div class="rp-stat-card">
+
+                <div class="rp-stat-top">
+                    <span class="rp-stat-label">Inventory Value</span>
+                    <span class="rp-stat-icon">₹</span>
+                </div>
+
+                <div class="rp-stat-value">
+                    ₹{{ "%.2f"|format(total_stock_value|float) }}
+                </div>
+
+                <div class="rp-stat-note">
+                    Current stock value
+                </div>
+
+            </div>
+
+
+            <div class="rp-stat-card">
+
+                <div class="rp-stat-top">
+                    <span class="rp-stat-label">Product Categories</span>
+                    <span class="rp-stat-icon">▧</span>
+                </div>
+
+                <div class="rp-stat-value">
+                    {{ total_categories }}
+                </div>
+
+                <div class="rp-stat-note">
+                    Active product categories
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             SALES PERFORMANCE
+        ======================================= -->
+
+        <section class="rp-section" id="sales-performance">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Sales Performance</h2>
+                    <p>Overview of recorded business performance</p>
+                </div>
+
+                <a class="rp-section-link"
+                   href="{{ url_for('sales') }}">
+                    Manage Sales →
+                </a>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <div class="rp-sales-summary">
+
+                    <div class="rp-sales-item">
+                        <span>Total Revenue</span>
+                        <strong class="rp-orange">
+                            ₹{{ "%.2f"|format(total_sales|float) }}
+                        </strong>
+                    </div>
+
+                    <div class="rp-sales-item">
+                        <span>Total Transactions</span>
+                        <strong>
+                            {{ total_transactions }}
+                        </strong>
+                    </div>
+
+                    <div class="rp-sales-item">
+                        <span>Total Units Sold</span>
+                        <strong>
+                            {{ total_units_sold }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             INVENTORY OVERVIEW
+        ======================================= -->
+
+        <section class="rp-section">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Inventory Overview</h2>
+                    <p>Current inventory health and stock status</p>
+                </div>
+
+                <a class="rp-section-link"
+                   href="{{ url_for('inventory') }}">
+                    View Inventory →
+                </a>
+
+            </div>
+
+            <div class="rp-grid-2">
+
+                <div class="rp-panel">
+
+                    <h3 class="rp-panel-title">
+                        Inventory Status
+                    </h3>
+
+                    <p class="rp-panel-subtitle">
+                        Product stock distribution
+                    </p>
+
+                    <div class="rp-sales-summary">
+
+                        <div class="rp-sales-item">
+                            <span>Healthy Stock</span>
+                            <strong class="rp-green">
+                                {{ total_products - low_stock_count - out_of_stock_count }}
+                            </strong>
+                        </div>
+
+                        <div class="rp-sales-item">
+                            <span>Low Stock</span>
+                            <strong class="rp-yellow">
+                                {{ low_stock_count }}
+                            </strong>
+                        </div>
+
+                        <div class="rp-sales-item">
+                            <span>Out of Stock</span>
+                            <strong class="rp-red">
+                                {{ out_of_stock_count }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="rp-panel">
+
+                    <h3 class="rp-panel-title">
+                        Inventory Summary
+                    </h3>
+
+                    <p class="rp-panel-subtitle">
+                        Current product information
+                    </p>
+
+                    <div class="rp-insight">
+                        <span class="rp-insight-icon">▦</span>
+                        <div>
+                            <strong>{{ total_products }} Products</strong>
+                            <p>Products currently registered in the system.</p>
+                        </div>
+                    </div>
+
+                    <div class="rp-insight">
+                        <span class="rp-insight-icon">₹</span>
+                        <div>
+                            <strong>
+                                ₹{{ "%.2f"|format(total_stock_value|float) }}
+                            </strong>
+                            <p>Estimated value of available inventory.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             CHART 1: DAILY SALES PERFORMANCE
+        ======================================= -->
+
+        <section class="rp-section" id="daily-sales-chart">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Daily Sales Performance</h2>
+                    <p>Revenue recorded during the last seven calendar days</p>
+                </div>
+
+                <span class="rp-section-link">
+                    LAST 7 DAYS
+                </span>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <h3 class="rp-panel-title">
+                    Revenue Analytics
+                </h3>
+
+                <p class="rp-panel-subtitle">
+                    Daily sales revenue based on recorded transactions
+                </p>
+
+                {% set sales_max = daily_sales_chart|map(attribute='revenue')|max
+                    if daily_sales_chart else 0 %}
+
+                {% if daily_sales_chart %}
+
+                    <div class="rp-chart">
+
+                        {% for day in daily_sales_chart %}
+
+                            <div class="rp-chart-row">
+
+                                <span class="rp-chart-label">
+                                    {{ day.label }}
+                                </span>
+
+                                <div class="rp-chart-track">
+
+                                    <div
+                                        class="rp-chart-bar rp-sales-bar"
+                                        style="width: {{ day.bar_width }}%;"
+                                    ></div>
+
+                                </div>
+
+                                <span class="rp-chart-value">
+                                    ₹{{ "%.0f"|format(day.revenue|float) }}
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="rp-chart-legend">
+                        <span>
+                            <span class="rp-legend-dot rp-orange-dot"></span>
+                            Daily Revenue
+                        </span>
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-chart-empty">
+                        No daily sales data available yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             RECENT SALES
+        ======================================= -->
+
+        <section class="rp-section">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Recent Sales</h2>
+                    <p>Latest recorded sales transactions</p>
+                </div>
+
+                <a class="rp-section-link"
+                   href="{{ url_for('sales') }}">
+                    View All Sales →
+                </a>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <div class="rp-table-wrap">
+
+                    <table class="rp-table">
+
+                        <thead>
+                            <tr>
+                                <th>SALE ID</th>
+                                <th>PRODUCT</th>
+                                <th>QUANTITY</th>
+                                <th>UNIT PRICE</th>
+                                <th>TOTAL</th>
+                                <th>DATE</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for sale in recent_sales %}
+
+                                <tr>
+                                    <td>#{{ sale.id }}</td>
+                                    <td>{{ sale.product_name }}</td>
+                                    <td>{{ sale.quantity }}</td>
+
+                                    <td>
+                                        ₹{{ "%.2f"|format(sale.unit_price|float) }}
+                                    </td>
+
+                                    <td class="rp-orange">
+                                        ₹{{ "%.2f"|format(sale.total_amount|float) }}
+                                    </td>
+
+                                    <td>{{ sale.sale_date }}</td>
+                                </tr>
+
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="6" class="rp-empty">
+                                        No sales transactions recorded yet.
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             RECENT PRODUCTS
+        ======================================= -->
+
+        <section class="rp-section">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Recently Added Products</h2>
+                    <p>Latest products registered in inventory</p>
+                </div>
+
+                <a class="rp-section-link"
+                   href="{{ url_for('products') }}">
+                    Manage Products →
+                </a>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <div class="rp-table-wrap">
+
+                    <table class="rp-table">
+
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>CATEGORY</th>
+                                <th>PRICE</th>
+                                <th>STOCK</th>
+                                <th>REORDER LEVEL</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for product in recent_products %}
+
+                                <tr>
+
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.category }}</td>
+
+                                    <td>
+                                        ₹{{ "%.2f"|format(product.price|float) }}
+                                    </td>
+
+                                    <td>{{ product.stock_quantity }}</td>
+                                    <td>{{ product.reorder_level }}</td>
+
+                                    <td>
+
+                                        {% if product.stock_quantity == 0 %}
+
+                                            <span class="rp-badge rp-badge-critical">
+                                                Out of Stock
+                                            </span>
+
+                                        {% elif product.stock_quantity <= product.reorder_level %}
+
+                                            <span class="rp-badge rp-badge-warning">
+                                                Low Stock
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="rp-badge rp-badge-healthy">
+                                                Healthy
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="6" class="rp-empty">
+                                        No products have been added yet.
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             AI DEMAND FORECAST
+        ======================================= -->
+
+        <section class="rp-section" id="demand-forecast">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>AI Demand Forecast</h2>
+                    <p>Product-level predicted demand analysis</p>
+                </div>
+
+                <span class="rp-section-link">
+                    {{ successful_forecasts }}/{{ forecast_products|length }}
+                    FORECASTS AVAILABLE
+                </span>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <div class="rp-table-wrap">
+
+                    <table class="rp-table">
+
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>CURRENT STOCK</th>
+                                <th>REORDER LEVEL</th>
+                                <th>HISTORY DAYS</th>
+                                <th>7-DAY DEMAND</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in forecast_products %}
+
+                                <tr>
+
+                                    <td>{{ item.product_name }}</td>
+                                    <td>{{ item.current_stock }}</td>
+                                    <td>{{ item.reorder_level }}</td>
+                                    <td>{{ item.history_days }}</td>
+
+                                    <td class="rp-orange">
+                                        {% if item.status == "success" %}
+                                            {{ "%.2f"|format(item.total_predicted_demand|float) }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+
+                                        {% if item.status == "success" %}
+
+                                            <span class="rp-badge rp-badge-healthy">
+                                                Forecast Ready
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="rp-badge rp-badge-neutral">
+                                                Unavailable
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                                {% if item.status != "success" and item.message %}
+
+                                    <tr>
+                                        <td colspan="6">
+                                            <span class="rp-chart-label">
+                                                {{ item.message }}
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="6" class="rp-empty">
+                                        Add products to begin demand forecasting.
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             CHART 2: SEVEN-DAY DEMAND FORECAST
+        ======================================= -->
+
+        <section class="rp-section" id="forecast-chart">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Seven-Day Demand Forecast</h2>
+                    <p>Predicted total product demand for the next seven days</p>
+                </div>
+
+                <span class="rp-section-link">
+                    FORECAST ANALYTICS
+                </span>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <h3 class="rp-panel-title">
+                    Demand Trend
+                </h3>
+
+                <p class="rp-panel-subtitle">
+                    Combined daily predictions from successful product forecasts
+                </p>
+
+                {% if daily_forecast_totals %}
+
+                    {% set max_demand = daily_forecast_totals|map(attribute='demand')|max %}
+
+                    <div class="rp-line-chart-wrap">
+
+                        <svg
+                            class="rp-line-chart"
+                            viewBox="0 0 700 260"
+                            role="img"
+                            aria-label="Seven-day demand forecast chart"
+                        >
+
+                            {% for grid in range(5) %}
+
+                                <line
+                                    x1="45"
+                                    y1="{{ 25 + grid * 48 }}"
+                                    x2="675"
+                                    y2="{{ 25 + grid * 48 }}"
+                                    stroke="#383838"
+                                    stroke-width="1"
+                                />
+
+                            {% endfor %}
+
+                            {% set chart_points = namespace(points="") %}
+
+                            {% for day in daily_forecast_totals %}
+
+                                {% set x = 55 + (
+                                    loop.index0 * 610 /
+                                    ((daily_forecast_totals|length - 1)
+                                    if daily_forecast_totals|length > 1
+                                    else 1)
+                                ) %}
+
+                                {% set y = 215 - (
+                                    (day.demand|float / max_demand|float * 170)
+                                    if max_demand|float > 0
+                                    else 0
+                                ) %}
+
+                                {% set chart_points.points =
+                                    chart_points.points
+                                    ~ x|round(2)
+                                    ~ ","
+                                    ~ y|round(2)
+                                    ~ " "
+                                %}
+
+                            {% endfor %}
+
+                            <polyline
+                                points="{{ chart_points.points }}"
+                                fill="none"
+                                stroke="#F97316"
+                                stroke-width="4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            {% for day in daily_forecast_totals %}
+
+                                {% set x = 55 + (
+                                    loop.index0 * 610 /
+                                    ((daily_forecast_totals|length - 1)
+                                    if daily_forecast_totals|length > 1
+                                    else 1)
+                                ) %}
+
+                                {% set y = 215 - (
+                                    (day.demand|float / max_demand|float * 170)
+                                    if max_demand|float > 0
+                                    else 0
+                                ) %}
+
+                                <circle
+                                    cx="{{ x }}"
+                                    cy="{{ y }}"
+                                    r="5"
+                                    fill="#FDBA74"
+                                    stroke="#F97316"
+                                    stroke-width="2"
+                                />
+
+                                <text
+                                    x="{{ x }}"
+                                    y="239"
+                                    text-anchor="middle"
+                                >
+                                    {{ day.date }}
+                                </text>
+
+                            {% endfor %}
+
+                        </svg>
+
+                    </div>
+
+                    <div class="rp-chart">
+
+                        {% for day in daily_forecast_totals %}
+
+                            <div class="rp-chart-row">
+
+                                <span class="rp-chart-label">
+                                    {{ day.date }}
+                                </span>
+
+                                <div class="rp-chart-track">
+
+                                    <div
+                                        class="rp-chart-bar rp-demand-bar"
+                                        style="width: {{ day.bar_width }}%;"
+                                    ></div>
+
+                                </div>
+
+                                <span class="rp-chart-value">
+                                    {{ "%.2f"|format(day.demand|float) }}
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="rp-chart-legend">
+                        <span>
+                            <span class="rp-legend-dot rp-orange-dot"></span>
+                            Predicted Demand
+                        </span>
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-chart-empty">
+                        Forecast data is not available yet.
+                        Successful product forecasts will appear here.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             SMART REORDER INTELLIGENCE
+        ======================================= -->
+
+        <section class="rp-section" id="smart-reorder">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Smart Reorder Intelligence</h2>
+                    <p>Stock replenishment recommendations</p>
+                </div>
+
+                <span class="rp-section-link">
+                    REORDER ANALYSIS
+                </span>
+
+            </div>
+
+            <div class="rp-grid-2">
+
+                <div class="rp-panel">
+
+                    <h3 class="rp-panel-title">
+                        Reorder Status Summary
+                    </h3>
+
+                    <p class="rp-panel-subtitle">
+                        Product distribution by reorder status
+                    </p>
+
+                    <div class="rp-sales-summary">
+
+                        <div class="rp-sales-item">
+                            <span>Critical</span>
+                            <strong class="rp-red">
+                                {{ critical_reorder_count }}
+                            </strong>
+                        </div>
+
+                        <div class="rp-sales-item">
+                            <span>Reorder Soon</span>
+                            <strong class="rp-yellow">
+                                {{ reorder_soon_count }}
+                            </strong>
+                        </div>
+
+                        <div class="rp-sales-item">
+                            <span>Healthy</span>
+                            <strong class="rp-green">
+                                {{ healthy_reorder_count }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="rp-panel">
+
+                    <h3 class="rp-panel-title">
+                        Reorder Information
+                    </h3>
+
+                    <p class="rp-panel-subtitle">
+                        Automated replenishment decision support
+                    </p>
+
+                    <div class="rp-insight">
+                        <span class="rp-insight-icon">⟳</span>
+                        <div>
+                            <strong>Smart Reorder Analysis</strong>
+                            <p>
+                                Recommendations use stock levels,
+                                lead time, safety stock and available
+                                demand forecasts.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="rp-panel" style="margin-top: 17px;">
+
+                <h3 class="rp-panel-title">
+                    Product Reorder Recommendations
+                </h3>
+
+                <p class="rp-panel-subtitle">
+                    Current stock, reorder point and recommended quantity
+                </p>
+
+                <div class="rp-table-wrap">
+
+                    <table class="rp-table">
+
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>CURRENT STOCK</th>
+                                <th>LEAD TIME</th>
+                                <th>SAFETY STOCK</th>
+                                <th>REORDER POINT</th>
+                                <th>RECOMMENDED QTY</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in smart_reorder_recommendations %}
+
+                                <tr>
+
+                                    <td>{{ item.product_name }}</td>
+                                    <td>{{ item.current_stock }}</td>
+                                    <td>{{ item.lead_time_days }} days</td>
+                                    <td>{{ item.safety_stock }}</td>
+                                    <td>{{ item.reorder_point }}</td>
+
+                                    <td class="rp-orange">
+                                        {{ item.recommended_quantity }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if item.status == "critical" %}
+
+                                            <span class="rp-badge rp-badge-critical">
+                                                Critical
+                                            </span>
+
+                                        {% elif item.status == "reorder_soon" %}
+
+                                            <span class="rp-badge rp-badge-warning">
+                                                Reorder Soon
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="rp-badge rp-badge-healthy">
+                                                Healthy
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="7" class="rp-empty">
+                                        No reorder recommendations available.
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             CHART 3: STOCK COMPARISON
+        ======================================= -->
+
+        <section class="rp-section" id="stock-comparison">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Stock Level Analysis</h2>
+                    <p>Current stock compared with reorder point and safety stock</p>
+                </div>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <h3 class="rp-panel-title">
+                    Stock Comparison
+                </h3>
+
+                <p class="rp-panel-subtitle">
+                    Product-level inventory threshold comparison
+                </p>
+
+                <div class="rp-chart-legend">
+                    <span>
+                        <span class="rp-legend-dot rp-orange-dot"></span>
+                        Current Stock
+                    </span>
+
+                    <span>
+                        <span class="rp-legend-dot rp-blue-dot"></span>
+                        Reorder Point
+                    </span>
+
+                    <span>
+                        <span class="rp-legend-dot rp-green-dot"></span>
+                        Safety Stock
+                    </span>
+                </div>
+
+                {% for item in stock_chart_data %}
+
+                    <div class="rp-stock-product">
+
+                        <div class="rp-stock-product-name">
+                            {{ item.product_name }}
+                        </div>
+
+                        <div class="rp-stock-line">
+
+                            <span>Current Stock</span>
+
+                            <div class="rp-chart-track">
+                                <div
+                                    class="rp-chart-bar rp-stock-current"
+                                    style="width: {{ item.current_width }}%;"
+                                ></div>
+                            </div>
+
+                            <strong>{{ item.current_stock }}</strong>
+
+                        </div>
+
+                        <div class="rp-stock-line">
+
+                            <span>Reorder Point</span>
+
+                            <div class="rp-chart-track">
+                                <div
+                                    class="rp-chart-bar rp-stock-reorder"
+                                    style="width: {{ item.reorder_width }}%;"
+                                ></div>
+                            </div>
+
+                            <strong>{{ item.reorder_point }}</strong>
+
+                        </div>
+
+                        <div class="rp-stock-line">
+
+                            <span>Safety Stock</span>
+
+                            <div class="rp-chart-track">
+                                <div
+                                    class="rp-chart-bar rp-stock-safety"
+                                    style="width: {{ item.safety_width }}%;"
+                                ></div>
+                            </div>
+
+                            <strong>{{ item.safety_stock }}</strong>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-chart-empty">
+                        No stock comparison data available.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             STOCKOUT AND OVERSTOCK RISK
+        ======================================= -->
+
+        <section class="rp-section" id="stock-risk">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Stockout & Overstock Risk Intelligence</h2>
+                    <p>Inventory risk classification and monitoring</p>
+                </div>
+
+            </div>
+
+
+            <div class="rp-stats-grid">
+
+                <div class="rp-stat-card">
+                    <div class="rp-stat-label">Critical Risk</div>
+                    <div class="rp-stat-value rp-red">
+                        {{ stockout_critical_count }}
+                    </div>
+                </div>
+
+                <div class="rp-stat-card">
+                    <div class="rp-stat-label">High Risk</div>
+                    <div class="rp-stat-value rp-orange">
+                        {{ stockout_high_count }}
+                    </div>
+                </div>
+
+                <div class="rp-stat-card">
+                    <div class="rp-stat-label">Medium Risk</div>
+                    <div class="rp-stat-value rp-yellow">
+                        {{ medium_risk_count }}
+                    </div>
+                </div>
+
+                <div class="rp-stat-card">
+                    <div class="rp-stat-label">Healthy Products</div>
+                    <div class="rp-stat-value rp-green">
+                        {{ healthy_risk_count }}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="rp-panel">
+
+                <h3 class="rp-panel-title">
+                    Product Risk Analysis
+                </h3>
+
+                <p class="rp-panel-subtitle">
+                    Risk level, stock availability and recommendations
+                </p>
+
+                <div class="rp-table-wrap">
+
+                    <table class="rp-table">
+
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>CURRENT STOCK</th>
+                                <th>LEAD TIME</th>
+                                <th>DAYS REMAINING</th>
+                                <th>STOCK ABOVE TARGET</th>
+                                <th>OVERSTOCK EXCESS</th>
+                                <th>RISK LEVEL</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in stock_risk_results %}
+
+                                <tr>
+
+                                    <td>{{ item.product_name }}</td>
+                                    <td>{{ item.current_stock }}</td>
+                                    <td>{{ item.lead_time_days }} days</td>
+
+                                    <td>
+                                        {% if item.days_remaining is not none %}
+                                            {{ "%.1f"|format(item.days_remaining|float) }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ item.stock_above_target }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.overstock_excess }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if item.risk_level == "Critical" %}
+
+                                            <span class="rp-badge rp-badge-critical">
+                                                Critical
+                                            </span>
+
+                                        {% elif item.risk_level == "High" %}
+
+                                            <span class="rp-badge rp-badge-warning">
+                                                High
+                                            </span>
+
+                                        {% elif item.risk_level == "Medium" %}
+
+                                            <span class="rp-badge rp-badge-medium">
+                                                Medium
+                                            </span>
+
+                                        {% elif item.risk_level == "Overstock" %}
+
+                                            <span class="rp-badge rp-badge-neutral">
+                                                Overstock
+                                            </span>
+
+                                        {% elif item.risk_level == "Healthy" %}
+
+                                            <span class="rp-badge rp-badge-healthy">
+                                                Healthy
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="rp-badge rp-badge-neutral">
+                                                Insufficient Data
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="7" class="rp-empty">
+                                        No stock risk results available.
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             CHART 4: INVENTORY RISK OVERVIEW
+        ======================================= -->
+
+        <section class="rp-section" id="risk-chart">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>Inventory Risk Overview</h2>
+                    <p>Distribution of products across risk categories</p>
+                </div>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <h3 class="rp-panel-title">
+                    Risk Distribution
+                </h3>
+
+                <p class="rp-panel-subtitle">
+                    Actual product counts from the stock risk engine
+                </p>
+
+                {% for item in risk_chart_data %}
+
+                    {% if item.label == "Critical" %}
+                        {% set risk_class = "rp-risk-critical" %}
+                    {% elif item.label == "High Risk" %}
+                        {% set risk_class = "rp-risk-high" %}
+                    {% elif item.label == "Medium Risk" %}
+                        {% set risk_class = "rp-risk-medium" %}
+                    {% elif item.label == "Overstock" %}
+                        {% set risk_class = "rp-risk-overstock" %}
+                    {% elif item.label == "Healthy" %}
+                        {% set risk_class = "rp-risk-healthy" %}
+                    {% else %}
+                        {% set risk_class = "rp-risk-insufficient" %}
+                    {% endif %}
+
+                    <div class="rp-risk-row">
+
+                        <div class="rp-risk-header">
+
+                            <span>{{ item.label }}</span>
+
+                            <strong>
+                                {{ item.count }}
+                                ({{ item.percentage }}%)
+                            </strong>
+
+                        </div>
+
+                        <div class="rp-risk-track">
+
+                            <div
+                                class="rp-risk-bar {{ risk_class }}"
+                                style="width: {{ item.percentage }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-chart-empty">
+                        No risk classification data available.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             AI INVENTORY INSIGHTS
+        ======================================= -->
+
+        <section class="rp-section" id="ai-insights">
+
+            <div class="rp-section-heading">
+
+                <div>
+                    <h2>AI Inventory Insights</h2>
+                    <p>Rule-based inventory observations and decision support</p>
+                </div>
+
+                <span class="rp-section-link">
+                    INVENTORY INTELLIGENCE
+                </span>
+
+            </div>
+
+            <div class="rp-panel">
+
+                <div class="rp-insight">
+
+                    <span class="rp-insight-icon">✧</span>
+
+                    <div>
+                        <strong>Inventory Overview</strong>
+
+                        <p>
+                            The system currently monitors
+                            {{ total_products }} products across
+                            {{ total_categories }} categories.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                {% if low_stock_count > 0 or out_of_stock_count > 0 %}
+
+                    <div class="rp-insight">
+
+                        <span class="rp-insight-icon">⚠</span>
+
+                        <div>
+                            <strong>Stock Attention Required</strong>
+
+                            <p>
+                                {{ low_stock_count }} products are below
+                                or at their reorder level, and
+                                {{ out_of_stock_count }} products are
+                                out of stock. Review replenishment
+                                recommendations.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-insight">
+
+                        <span class="rp-insight-icon">✓</span>
+
+                        <div>
+                            <strong>Inventory Stock Status</strong>
+
+                            <p>
+                                No products are currently classified
+                                as low stock or out of stock by the
+                                inventory threshold check.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if successful_forecasts > 0 %}
+
+                    <div class="rp-insight">
+
+                        <span class="rp-insight-icon">⌁</span>
+
+                        <div>
+                            <strong>Demand Forecast Available</strong>
+
+                            <p>
+                                Successful forecasts are available for
+                                {{ successful_forecasts }} of
+                                {{ forecast_products|length }} products.
+                                Use the demand trend to support
+                                replenishment planning.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-insight">
+
+                        <span class="rp-insight-icon">⌁</span>
+
+                        <div>
+                            <strong>Forecast Data Unavailable</strong>
+
+                            <p>
+                                No successful product forecasts are
+                                currently available. Check sales history
+                                and forecasting requirements.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if stockout_critical_count > 0 or stockout_high_count > 0 %}
+
+                    <div class="rp-insight">
+
+                        <span class="rp-insight-icon">!</span>
+
+                        <div>
+                            <strong>Stock Risk Alert</strong>
+
+                            <p>
+                                Products have been identified with
+                                critical or high stock risk.
+                                Review the stock risk analysis
+                                and recommended actions.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="rp-insight">
+
+                        <span class="rp-insight-icon">✓</span>
+
+                        <div>
+                            <strong>Stock Risk Monitoring</strong>
+
+                            <p>
+                                No products are currently classified
+                                as critical or high risk by the
+                                stock risk analysis.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             FOOTER
+        ======================================= -->
+
+        <footer class="rp-footer">
+
+            <span>
+                © 2026 RetailPulse AI. All rights reserved.
+            </span>
+
+            <span>
+                Predict Demand. Prevent Stockouts. Reduce Waste.
+            </span>
+
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

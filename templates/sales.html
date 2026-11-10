@@ -1,0 +1,295 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sales | RetailPulse AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <h2>◈ RetailPulse <span>AI</span></h2>
+
+    <p class="menu-title">MAIN MENU</p>
+
+    <nav class="sidebar-nav">
+
+        <a href="{{ url_for('dashboard') }}">
+            ▦ Dashboard
+        </a>
+
+        <a href="{{ url_for('products') }}">
+            ▣ Products
+        </a>
+
+        <a href="{{ url_for('inventory') }}">
+            ▤ Inventory
+        </a>
+
+        <a class="active" href="{{ url_for('sales') }}">
+            ▥ Sales
+        </a>
+
+        <!-- DEMAND FORECAST NAVIGATION -->
+        <a href="{{ url_for('dashboard') }}#demand-forecast">
+            ⌁ Demand Forecast
+        </a>
+
+        <!-- SMART REORDER NAVIGATION -->
+        <a href="{{ url_for('dashboard') }}#smart-reorder">
+            ↗ Smart Reorder
+        </a>
+
+        <a href="{{ url_for('dashboard') }}">
+            ▧ Reports
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        INTELLIGENCE. PRIVACY. GROWTH.
+    </div>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+    <!-- HEADER -->
+    <header>
+
+        <div>
+            <h1>Sales Management</h1>
+
+            <p>
+                Record transactions and monitor your store sales.
+            </p>
+        </div>
+
+        <div class="status">
+            ● Database Connected
+        </div>
+
+    </header>
+
+
+    <!-- FLASH NOTIFICATIONS -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div class="notice {{ category }}">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+
+    <!-- SALES STATISTICS -->
+    <section class="stats">
+
+        <div class="card">
+
+            <p>Total Revenue</p>
+
+            <h2>
+                ₹{{ "%.2f"|format(total_sales) }}
+            </h2>
+
+            <small>Recorded sales value</small>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>Transactions</p>
+
+            <h2>
+                {{ total_transactions }}
+            </h2>
+
+            <small>Total completed sales</small>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>Units Sold</p>
+
+            <h2>
+                {{ total_units_sold }}
+            </h2>
+
+            <small>Total quantity sold</small>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECORD NEW SALE -->
+    <section class="card product-form">
+
+        <h3>＋ Record New Sale</h3>
+
+        {% if products %}
+
+            <form method="POST"
+                  action="{{ url_for('sales') }}">
+
+                <label>Select Product</label>
+
+                <select name="product_id" required>
+
+                    <option value="">
+                        Choose a product
+                    </option>
+
+                    {% for product in products %}
+
+                        <option
+                            value="{{ product.id }}"
+                            {% if product.stock_quantity == 0 %}
+                                disabled
+                            {% endif %}>
+
+                            {{ product.name }} —
+                            ₹{{ "%.2f"|format(product.price) }}
+                            (Stock: {{ product.stock_quantity }})
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <label>Quantity Sold</label>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    step="1"
+                    required
+                >
+
+
+                <button type="submit">
+                    Record Sale
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <div class="empty-chart">
+                No products available.
+                Add products before recording sales.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- SALES TRANSACTION HISTORY -->
+    <section class="card product-table">
+
+        <h3>Sales Transaction History</h3>
+
+        {% if sales %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Sale ID</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Amount</th>
+                            <th>Date</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for sale in sales %}
+
+                            <tr>
+
+                                <td>
+                                    #{{ sale.id }}
+                                </td>
+
+                                <td>
+                                    {{ sale.product_name }}
+                                </td>
+
+                                <td>
+                                    {{ sale.quantity }}
+                                </td>
+
+                                <td>
+                                    ₹{{ "%.2f"|format(sale.unit_price) }}
+                                </td>
+
+                                <td>
+                                    ₹{{ "%.2f"|format(sale.total_amount) }}
+                                </td>
+
+                                <td>
+                                    {{ sale.sale_date }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-chart">
+                No sales recorded yet.
+                Record your first sale above.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+        RetailPulse AI · Predict Demand. Prevent Stockouts. Reduce Waste.
+    </footer>
+
+</main>
+
+</body>
+</html>
+```
